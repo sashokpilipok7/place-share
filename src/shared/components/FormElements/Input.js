@@ -21,15 +21,17 @@ const inputReducer = (state, action) => {
   }
 };
 
-const initialState = { value: "", isValid: false, isTouched: false };
-
 function Input(props) {
-  const [inputState, dispatch] = useReducer(inputReducer, initialState);
+  const [inputState, dispatch] = useReducer(inputReducer, {
+    value: props.initialValue || "",
+    isValid: props.initialIsValid || false,
+    isTouched: false,
+  });
 
   const { name, onChange } = props;
 
   useEffect(() => {
-    onChange({ [name]: inputState });
+    onChange(name, inputState.value, inputState.isValid);
   }, [name, onChange, inputState]);
 
   const changeHandler = (event) => {

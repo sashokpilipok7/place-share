@@ -5,7 +5,6 @@ import UserItem from "./UserItem";
 import "./UsersList.css";
 
 function UsersList({ users }) {
-  console.log(users, "users.lenght");
   if (users.lenght === 0) {
     return (
       <div className="center">
