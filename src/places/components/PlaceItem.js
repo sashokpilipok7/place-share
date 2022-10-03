@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import Map from "shared/components/UIElements/Map";
 import Modal from "shared/components/UIElements/Modal";
 import Card from "shared/components/UIElements/Card";
 import Button from "shared/components/FormElements/Button";
+import { AuthContext } from "shared/context/auth-context";
 import "./PlaceItem.css";
 
 function PlaceItem({
@@ -16,9 +17,16 @@ function PlaceItem({
   coordinates,
 }) {
   const [showMap, setShowMap] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
+
+  const showDeleteHandler = () => setShowDeleteDialog(true);
+  const cancelDeleteHandler = () => setShowDeleteDialog(false);
+  const confirmDeleteHandler = () => console.log("DELETING...");
+
+  const auth = useContext(AuthContext);
 
   return (
     <>
@@ -36,11 +44,30 @@ function PlaceItem({
             <Button inverse onClick={openMapHandler}>
               VIEW ON MAP
             </Button>
-            <Button to={`/places/${id}`}>EDIT</Button>
-            <Button danger>DELETE</Button>
+            {auth.isLoggedIn && (
+              <>
+                <Button to={`/places/${id}`}>EDIT</Button>
+                <Button danger onClick={showDeleteHandler}>
+                  DELETE
+                </Button>
+              </>
+            )}
           </div>
         </Card>
       </li>
+      <Modal
+        show={showDeleteDialog}
+        header="Are you sure?"
+        footerClass="place-item__modal-actions"
+        footer={
+          <>
+            <Button onClick={cancelDeleteHandler}>No</Button>
+            <Button onClick={confirmDeleteHandler}>Yes</Button>
+          </>
+        }
+      >
+        <p>Do you want to delete this place?</p>
+      </Modal>
       <Modal
         show={showMap}
         onCancel={closeMapHandler}

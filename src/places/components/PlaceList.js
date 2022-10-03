@@ -1,6 +1,7 @@
 import React from "react";
 
 import Card from "shared/components/UIElements/Card";
+import Button from "shared/components/FormElements/Button";
 import PlaceItem from "./PlaceItem";
 import "./PlaceList.css";
 
@@ -10,7 +11,7 @@ function PlaceList({ places }) {
       <div className="place-list center">
         <Card>
           <h2>No places found. Try to create one!</h2>
-          <button>Add place</button>
+          <Button to="/places/new">Add place</Button>
         </Card>
       </div>
     );

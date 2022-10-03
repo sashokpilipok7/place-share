@@ -32,20 +32,22 @@ function UpdatePlace(props) {
   const currentPlace = PLACES.find((item) => item.id === placeId); // upload data
 
   useEffect(() => {
-    setFormData(
-      {
-        title: {
-          value: currentPlace.title,
-          isValid: true,
+    if (currentPlace) {
+      setFormData(
+        {
+          title: {
+            value: currentPlace.title,
+            isValid: true,
+          },
+          description: {
+            value: currentPlace.description,
+            isValid: true,
+          },
         },
-        description: {
-          value: currentPlace.description,
-          isValid: true,
-        },
-      },
-      true
-    ); //update form data after upload
-  }, [currentPlace.description, currentPlace.title, setFormData]);
+        true
+      ); //update form data after upload
+    }
+  }, [currentPlace, currentPlace.description, currentPlace.title, setFormData]);
 
   function submitHandler(e) {
     e.preventDefault();
