@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useHttpClient } from "shared/hooks/http-hook";
 
+import ErrorModal from "shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "shared/components/UIElements/LoadingSpinner";
 import PlaceList from "places/components/PlaceList";
 
 export const PLACES = [
@@ -34,9 +37,33 @@ export const PLACES = [
 
 function UserPlaces() {
   const { userId } = useParams();
-  const loadedPlaces = PLACES.filter((item) => item.creator === userId);
+  const { isLoading, error, sendReq, clearError } = useHttpClient();
+  const [loadedPlaces, setLoadedPlaces] = useState([]);
 
-  return <PlaceList places={loadedPlaces} />;
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const responseData = await sendReq(`places/user/${userId}`);
+        console.log(responseData);
+        setLoadedPlaces(responseData.places);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchUsers();
+  }, [sendReq, userId]);
+
+  return (
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      <PlaceList places={loadedPlaces} />
+    </>
+  );
 }
 
 export default UserPlaces;

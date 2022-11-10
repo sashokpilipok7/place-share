@@ -13,14 +13,19 @@ import NewPlace from "./places/pages/NewPlace";
 import UserPlaces from "places/pages/UserPlaces";
 import UpdatePlace from "places/pages/UpdatePlace";
 import { AuthContext } from "shared/context/auth-context";
+import { getAuth, setAuth, isAuth, removeAuth } from "shared/utils/auth";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(getAuth());
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuth());
 
-  const login = useCallback(() => {
+  const login = useCallback((data) => {
+    setAuth(data);
+    setUserId(data);
     setIsLoggedIn(true);
   }, []);
   const logout = useCallback(() => {
+    removeAuth();
     setIsLoggedIn(false);
   }, []);
 
@@ -60,9 +65,9 @@ const App = () => {
       </Switch>
     );
   }
-
+  console.log(userId, "authUserId");
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userId, login, logout }}>
       <Router>
         <MainNavigation />
         <main className="main">{routes}</main>

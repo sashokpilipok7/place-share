@@ -22,7 +22,7 @@ function UsersList({ users }) {
           id={id}
           image={image}
           name={name}
-          placeCount={places}
+          placeCount={places.length}
         />
       ))}
     </ul>
