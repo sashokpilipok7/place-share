@@ -16,12 +16,18 @@ export function useHttpClient() {
       const httpAbortController = new AbortController();
       activeHttpRequests.current.push(httpAbortController);
       try {
-        const response = await fetch(`http://localhost:5000/api/${path}`, {
-          method,
-          headers,
-          body,
-          signal: httpAbortController.signal,
-        });
+        const response = headers
+          ? await fetch(`http://localhost:5000/api/${path}`, {
+              method,
+              headers,
+              body,
+              signal: httpAbortController.signal,
+            })
+          : await fetch(`http://localhost:5000/api/${path}`, {
+              method,
+              body,
+              signal: httpAbortController.signal,
+            });
         const responseData = await response.json();
 
         activeHttpRequests.current.filter(

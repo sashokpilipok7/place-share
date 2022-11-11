@@ -11,6 +11,7 @@ import Input from "shared/components/FormElements/Input";
 import Button from "shared/components/FormElements/Button";
 import ErrorModal from "shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "shared/components/UIElements/LoadingSpinner";
+import ImageUpload from "shared/components/FormElements/ImageUpload";
 import { AuthContext } from "shared/context/auth-context";
 import "./Auth.css";
 
@@ -45,6 +46,10 @@ function Auth(props) {
             value: "",
             isValid: false,
           },
+          image: {
+            value: "",
+            isValid: false,
+          },
         },
         false
       );
@@ -53,6 +58,7 @@ function Auth(props) {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -70,18 +76,33 @@ function Auth(props) {
     }
 
     if (logInMode) {
-      sendReq("users/login", "POST", JSON.stringify(payload)).then((data) => {
+      try {
+        const data = await sendReq(
+          "users/login",
+          "POST",
+          JSON.stringify(payload)
+        );
         console.log(data);
         auth.login(data.user.id);
-      });
+      } catch (err) {
+        console.log(err);
+      }
     } else {
-      sendReq("users/signup", "POST", JSON.stringify(payload)).then((data) => {
+      try {
+        const formData = new FormData();
+        formData.append("email", payload.email);
+        formData.append("name", payload.name);
+        formData.append("password", payload.password);
+        formData.append("image", payload.image);
+        const data = await sendReq("users/signup", "POST", formData, null);
         console.log(data);
         auth.login(data.user.id);
-      });
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
-
+  console.log(formState.inputs);
   return (
     <>
       <ErrorModal error={error} onClear={clearError} />
@@ -99,6 +120,9 @@ function Auth(props) {
               errorText="Please enter valid EMAIL"
               onChange={onChangeHandler}
             />
+          )}
+          {!logInMode && (
+            <ImageUpload id="image" center onInput={onChangeHandler} />
           )}
           <Input
             name="email"
