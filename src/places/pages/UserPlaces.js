@@ -45,13 +45,19 @@ function UserPlaces() {
       try {
         const responseData = await sendReq(`places/user/${userId}`);
         console.log(responseData);
-        setLoadedPlaces(responseData.places);
+        responseData.places && setLoadedPlaces(responseData.places);
       } catch (err) {
         console.log(err);
       }
     }
     fetchUsers();
   }, [sendReq, userId]);
+
+  const placeDeleteHandler = (deletePlaceId) => {
+    setLoadedPlaces((prevList) =>
+      prevList.filter((i) => i.id !== deletePlaceId)
+    );
+  };
 
   return (
     <>
@@ -61,7 +67,7 @@ function UserPlaces() {
           <LoadingSpinner />
         </div>
       )}
-      <PlaceList places={loadedPlaces} />
+      <PlaceList places={loadedPlaces} onPlaceDelete={placeDeleteHandler} />
     </>
   );
 }

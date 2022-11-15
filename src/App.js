@@ -30,7 +30,7 @@ const App = () => {
   }, []);
 
   let routes;
-
+  console.log(process.env);
   if (isLoggedIn) {
     routes = (
       <Switch>

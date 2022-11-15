@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from "react";
 
+import ImageUpload from "shared/components/FormElements/ImageUpload";
 import ErrorModal from "shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "shared/components/UIElements/LoadingSpinner";
 import Button from "shared/components/FormElements/Button";
@@ -42,6 +43,10 @@ import "./NewPlace.css";
 
 const initialState = {
   inputs: {
+    image: {
+      value: null,
+      isValid: false,
+    },
     title: {
       value: "",
       isValid: false,
@@ -72,11 +77,13 @@ const NewPlace = () => {
       payload[key] = value.value;
     }
     try {
-      sendReq(
-        "places",
-        "POST",
-        JSON.stringify({ ...payload, creator: auth.userId })
-      );
+      const formData = new FormData();
+      formData.append("title", payload.title);
+      formData.append("address", payload.address);
+      formData.append("description", payload.description);
+      formData.append("creator", auth.userId);
+      formData.append("image", payload.image);
+      sendReq("places", "POST", formData, null);
     } catch (err) {
       console.log(err);
     }
@@ -87,6 +94,7 @@ const NewPlace = () => {
       <ErrorModal error={error} onClear={clearError} />
       {isLoading && <LoadingSpinner asOverlay />}
       <form className="place-form" onSubmit={submitHandler}>
+        <ImageUpload center id="image" onInput={onChangeHandler} />
         <Input
           name="title"
           element="input"

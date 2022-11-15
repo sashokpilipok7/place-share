@@ -5,7 +5,7 @@ import Button from "shared/components/FormElements/Button";
 import PlaceItem from "./PlaceItem";
 import "./PlaceList.css";
 
-function PlaceList({ places }) {
+function PlaceList({ places, onPlaceDelete }) {
   if (places.length === 0) {
     return (
       <div className="place-list center">
@@ -29,6 +29,7 @@ function PlaceList({ places }) {
             address={address}
             creatorId={creator}
             coordinates={location}
+            onDelete={onPlaceDelete}
           />
         )
       )}
